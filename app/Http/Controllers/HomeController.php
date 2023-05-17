@@ -13,5 +13,10 @@ class HomeController extends Controller
         return view('home', compact('tasks'));
     }
 
+    public function dashboard()
+    {
+        return view('dashboard');
+    }
+
 
 }

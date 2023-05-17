@@ -63,6 +63,11 @@ class UserController extends Controller
         return view('auth.register');
     }
 
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
     /**
      * Display a listing of the resource.
      */
