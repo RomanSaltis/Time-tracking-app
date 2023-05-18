@@ -12,7 +12,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
+        $tasks = Task::where('user_id', auth()->id())->orderBy('created_at', 'desc')->get();
+
         return view('tasks.index', compact('tasks'));
     }
 
@@ -21,7 +22,8 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        return view('tasks.create');
+
     }
 
     /**
@@ -29,7 +31,22 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'comment' => 'nullable',
+            'date' => 'required|date',
+            'time_spent' => 'required|integer',
+        ]);
+
+        $task = new Task();
+        $task->title = $validatedData['title'];
+        $task->comment = $validatedData['comment'];
+        $task->date = $validatedData['date'];
+        $task->time_spent = $validatedData['time_spent'];
+        $task->user_id = auth()->id();
+        $task->save();
+
+        return redirect()->route('tasks.index')->with('success', 'Task created successfully.');
     }
 
     /**
@@ -45,7 +62,8 @@ class TaskController extends Controller
      */
     public function edit(Task $task)
     {
-        //
+        return view('tasks.edit', compact('task'));
+
     }
 
     /**
@@ -53,7 +71,20 @@ class TaskController extends Controller
      */
     public function update(Request $request, Task $task)
     {
-        //
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'comment' => 'nullable',
+            'date' => 'required|date',
+            'time_spent' => 'required|integer',
+        ]);
+
+        $task->title = $validatedData['title'];
+        $task->comment = $validatedData['comment'];
+        $task->date = $validatedData['date'];
+        $task->time_spent = $validatedData['time_spent'];
+        $task->save();
+
+        return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
     }
 
     /**
@@ -61,6 +92,8 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+        $task->delete();
+
+        return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
     }
 }
