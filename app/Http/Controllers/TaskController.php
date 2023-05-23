@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Dompdf\Dompdf;
+use Illuminate\Support\Facades\View;
+
 
 class TaskController extends Controller
 {
@@ -95,5 +99,40 @@ class TaskController extends Controller
         $task->delete();
 
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully.');
+    }
+
+    public function generateReport(Request $request)
+    {
+        // Retrieve tasks based on the date range
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $tasks = Task::whereBetween('created_at', [$startDate, $endDate])->get();
+
+        // Create a new instance of the PDF class
+        $pdf = new Dompdf();
+
+        // Generate the HTML content from the view, passing the $tasks variable
+        $html = View::make('tasks.report', ['tasks' => $tasks])->render();
+
+        // Load the HTML content into the PDF
+        $pdf->loadHtml($html);
+
+        // (Optional) Set Dompdf options, if needed
+        // $pdf->setOptions(['...']);
+
+        // Render the PDF
+        $pdf->render();
+
+        // Generate the file name for the PDF
+        $fileName = 'report_' . date('YmdHis') . '.pdf';
+
+        // Get the PDF content
+        $output = $pdf->output();
+
+        // Create a download response
+        return Response::make($output, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
     }
 }

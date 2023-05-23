@@ -16,7 +16,6 @@ use App\Http\Controllers\TaskController;
 |
 */
 
-
 // Guest routes
 Route::middleware('guest')->group(function () {
     Route::get('/register', [UserController::class, 'showRegistrationForm'])->name('register');
@@ -27,7 +26,6 @@ Route::middleware('guest')->group(function () {
 
 // Auth routes
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
     Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
@@ -35,10 +33,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-});
+    Route::get('/tasks/report', [TaskController::class, 'generateReport'])->name('tasks.report');
 
-// Home route
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+    // User management routes
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});
 
 Route::get('/', function () {
     return view('welcome');

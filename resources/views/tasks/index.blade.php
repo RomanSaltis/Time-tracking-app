@@ -6,6 +6,21 @@
 
         <a href="{{ route('tasks.create') }}" class="btn btn-primary mb-3">Create Task</a>
 
+        <form action="{{ route('tasks.report') }}" method="GET" class="mb-3">
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="start_date" class="form-label">Start Date</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label for="end_date" class="form-label">End Date</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Generate Report</button>
+        </form>
+
         <table class="table table-striped">
             <thead>
             <tr>
@@ -27,11 +42,7 @@
                     <td>{{ $task->created_at }}</td>
                     <td>
                         <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary">Edit</a>
-                        <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this task?')">Delete</button>
-                        </form>
+                        <!-- Add a delete button or form for deleting the task -->
                     </td>
                 </tr>
             @endforeach
