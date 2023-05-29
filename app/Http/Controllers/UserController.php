@@ -3,17 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function register(Request $request)
+
+    /**
+     * Register a new user.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function register(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            'name' => 'required|min:2|string',
+            'email' => 'required|email:rfc,dns|unique:users',
+            'password' => 'required|min:8',
         ]);
 
         $user = new User();
@@ -27,7 +36,13 @@ class UserController extends Controller
         return redirect('/tasks');
     }
 
-    public function login(Request $request)
+    /**
+     * Log in a user.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function login(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
             'email' => 'required|email',
@@ -41,39 +56,76 @@ class UserController extends Controller
         }
     }
 
-    public function logout()
+    /**
+     * Log out the authenticated user.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function logout(): RedirectResponse
     {
         auth()->logout();
         return redirect('/login');
     }
 
-    public function showRegistrationForm()
+    /**
+     * Display the user registration form.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function showRegistrationForm(): View
     {
         return view('auth.register');
     }
 
-    public function showLoginForm()
+    /**
+     * Display the user login form.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function showLoginForm(): View
     {
         return view('auth.login');
     }
 
-    public function index()
+    /**
+     * Display the list of users.
+     *
+     * @param  User  $user
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function index(User $user): View
     {
-        $users = User::all();
+        $this->authorize('viewAny', $user);
+        if (!is_superadmin(user())){
+            $users = User::where('id', user()->id)->get();
+        }else{
+            $users = User::all();
+        }
         return view('users.index', compact('users'));
     }
 
-    public function create()
+    /**
+     * Display the user creation form.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function create(): View
     {
         return view('users.create');
     }
 
-    public function store(Request $request)
+    /**
+     * Store a newly created user.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request): RedirectResponse
     {
         $validatedData = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            'name' => 'required|min:2|string',
+            'email' => 'required|email:rfc,dns|unique:users',
+            'password' => 'required|min:8',
         ]);
 
         $user = new User();
@@ -85,18 +137,41 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
-    public function show(User $user)
+    /**
+     * Show the specified user.
+     *
+     * @param  User  $user
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function show(User $user): View
     {
+        $this->authorize('view', $user);
         return view('users.show', compact('user'));
     }
 
-    public function edit(User $user)
+    /**
+     * Display the user edit form.
+     *
+     * @param  User  $user
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function edit(User $user): View
     {
+        $this->authorize('update', $user);
+
         return view('users.edit', compact('user'));
     }
 
-    public function update(Request $request, User $user)
+    /**
+     * Update the specified user.
+     *
+     * @param  Request  $request
+     * @param  User  $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, User $user): RedirectResponse
     {
+        $this->authorize('update', $user);
         $validatedData = $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $user->id,
@@ -115,7 +190,13 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
-    public function destroy(User $user)
+    /**
+     * Delete the specified user.
+     *
+     * @param  User  $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(User $user): RedirectResponse
     {
         $user->delete();
 
