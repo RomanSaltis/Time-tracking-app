@@ -41,8 +41,13 @@
                     <td>{{ $task->time_spent }}</td>
                     <td>{{ $task->created_at }}</td>
                     <td>
+                        <a href="{{ route('tasks.show', $task->id) }}" class="btn btn-primary">View</a>
                         <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-primary">Edit</a>
-                        <!-- Add a delete button or form for deleting the task -->
+                        <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" style="display: inline-block" onsubmit="return confirm('Are you sure you want to delete this task?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
                     </td>
                 </tr>
             @endforeach
