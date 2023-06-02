@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Dompdf\Dompdf;
-//use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\View as FacadesView;
 
 
 class TaskController extends Controller
@@ -147,7 +147,7 @@ class TaskController extends Controller
         $pdf = new Dompdf();
 
         // Generate the HTML content from the view, passing the $tasks variable
-        $html = View::make('tasks.report', ['tasks' => $tasks])->render();
+        $html = FacadesView::make('tasks.report', ['tasks' => $tasks])->render();
 
         // Load the HTML content into the PDF
         $pdf->loadHtml($html);
