@@ -15,7 +15,7 @@ class UserController extends Controller
      * Register a new user.
      *
      * @param  Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function register(Request $request): RedirectResponse
     {
@@ -40,7 +40,7 @@ class UserController extends Controller
      * Log in a user.
      *
      * @param  Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function login(Request $request): RedirectResponse
     {
@@ -59,7 +59,7 @@ class UserController extends Controller
     /**
      * Log out the authenticated user.
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function logout(): RedirectResponse
     {
@@ -118,7 +118,7 @@ class UserController extends Controller
      * Store a newly created user.
      *
      * @param  Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function store(Request $request): RedirectResponse
     {
@@ -167,7 +167,7 @@ class UserController extends Controller
      *
      * @param  Request  $request
      * @param  User  $user
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function update(Request $request, User $user): RedirectResponse
     {
@@ -194,7 +194,7 @@ class UserController extends Controller
      * Delete the specified user.
      *
      * @param  User  $user
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function destroy(User $user): RedirectResponse
     {

@@ -18,6 +18,17 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="format" class="form-label">Report Format</label>
+                    <select id="format" name="format" class="form-select">
+                        <option value="pdf">PDF</option>
+                        <option value="csv">CSV</option>
+                        <option value="excel">Excel</option>
+                    </select>
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-primary mt-3">Generate Report</button>
         </form>
 
@@ -27,7 +38,7 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Comment</th>
-                <th>Time Spent</th>
+                <th>Time Spent/min</th>
                 <th>Created At</th>
                 <th>Actions</th>
             </tr>

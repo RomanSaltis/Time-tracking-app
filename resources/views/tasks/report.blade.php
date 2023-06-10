@@ -26,7 +26,7 @@
         <th>ID</th>
         <th>Title</th>
         <th>Comment</th>
-        <th>Time Spent</th>
+        <th>Time Spent/min</th>
         <th>Created At</th>
     </tr>
     </thead>
@@ -41,6 +41,12 @@
         </tr>
     @endforeach
     </tbody>
+    <tfoot>
+    <tr>
+        <th colspan="3">Total Time/min:</th>
+        <td colspan="2">{{ $totalTime }}</td>
+    </tr>
+    </tfoot>
 </table>
 </body>
 </html>
