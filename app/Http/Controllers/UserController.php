@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -12,6 +13,21 @@ class UserController extends Controller
 {
 
     /**
+     * Validate the user data.
+     *
+     * @param  Request  $request
+     * @return array
+     */
+    protected function validateUserData(Request $request): array
+    {
+        return $request->validate([
+            'name' => 'required|min:2|string',
+            'email' => 'required|email:rfc,dns|unique:users',
+            'password' => 'required|min:8',
+        ]);
+    }
+
+    /**
      * Register a new user.
      *
      * @param  Request  $request
@@ -19,11 +35,7 @@ class UserController extends Controller
      */
     public function register(Request $request): RedirectResponse
     {
-        $validatedData = $request->validate([
-            'name' => 'required|min:2|string',
-            'email' => 'required|email:rfc,dns|unique:users',
-            'password' => 'required|min:8',
-        ]);
+        $validatedData = $this->validateUserData($request);
 
         $user = new User();
         $user->name = $validatedData['name'];
@@ -90,8 +102,9 @@ class UserController extends Controller
     /**
      * Display the list of users.
      *
-     * @param  User  $user
+     * @param User $user
      * @return \Illuminate\Contracts\View\View
+     * @throws AuthorizationException
      */
     public function index(User $user): View
     {
@@ -122,11 +135,7 @@ class UserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $validatedData = $request->validate([
-            'name' => 'required|min:2|string',
-            'email' => 'required|email:rfc,dns|unique:users',
-            'password' => 'required|min:8',
-        ]);
+        $validatedData = $this->validateUserData($request);
 
         $user = new User();
         $user->name = $validatedData['name'];
@@ -140,8 +149,9 @@ class UserController extends Controller
     /**
      * Show the specified user.
      *
-     * @param  User  $user
+     * @param User $user
      * @return \Illuminate\Contracts\View\View
+     * @throws AuthorizationException
      */
     public function show(User $user): View
     {
@@ -152,8 +162,9 @@ class UserController extends Controller
     /**
      * Display the user edit form.
      *
-     * @param  User  $user
+     * @param User $user
      * @return \Illuminate\Contracts\View\View
+     * @throws AuthorizationException
      */
     public function edit(User $user): View
     {
@@ -165,9 +176,10 @@ class UserController extends Controller
     /**
      * Update the specified user.
      *
-     * @param  Request  $request
-     * @param  User  $user
+     * @param Request $request
+     * @param User $user
      * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function update(Request $request, User $user): RedirectResponse
     {
