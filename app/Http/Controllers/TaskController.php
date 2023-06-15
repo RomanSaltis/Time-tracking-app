@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -142,8 +141,9 @@ class TaskController extends Controller
      *
      * @param Request $request
      * @return mixed
+     * @throws Exception
      */
-    public function generateReport(Request $request)
+    public function generateReport(Request $request): mixed
     {
         // Retrieve tasks based on the date range
         $startDate = $request->input('start_date');
@@ -179,7 +179,7 @@ class TaskController extends Controller
      * @param int $totalTime
      * @return StreamedResponse
      */
-    protected function generateCsvReport($data, $totalTime)
+    protected function generateCsvReport(array $data, int $totalTime): StreamedResponse
     {
         $fileName = 'report_' . date('YmdHis') . '.csv';
 
@@ -214,7 +214,7 @@ class TaskController extends Controller
      * @return mixed
      * @throws Exception
      */
-    protected function generateExcelReport($data, $totalTime)
+    protected function generateExcelReport(array $data, int $totalTime): mixed
     {
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -249,9 +249,8 @@ class TaskController extends Controller
      * @param array $tasks
      * @param int $totalTime
      * @return mixed
-     * @throws BindingResolutionException
      */
-    protected function generatePdfReport($tasks, $totalTime)
+    protected function generatePdfReport(array $tasks, int $totalTime): mixed
     {
         $pdf = new Dompdf();
 
@@ -265,9 +264,6 @@ class TaskController extends Controller
 
         // Load the HTML content into the PDF
         $pdf->loadHtml($html);
-
-        // (Optional) Set Dompdf options, if needed
-        // $pdf->setOptions(['...']);
 
         // Render the PDF
         $pdf->render();
@@ -295,12 +291,12 @@ class TaskController extends Controller
      * @param array $data
      * @return int
      */
-    protected function calculateTotalTime($data)
+    protected function calculateTotalTime(array $data): int
     {
         $totalTime = 0;
 
         foreach ($data as $row) {
-            $timeSpent = isset($row['time_spent']) ? $row['time_spent'] : 0;
+            $timeSpent = $row['time_spent'] ?? 0;
             $totalTime += $timeSpent;
         }
 

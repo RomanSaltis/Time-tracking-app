@@ -97,7 +97,8 @@ class UserControllerTest extends TestCase
 
     public function testUserIndex(): void
     {
-        $user = User::factory()->create(['name' => 'Test User', 'email' => Str::random(6) . '@testing.com']);
+        $user = User::factory()
+            ->create(['name' => 'Test User', 'email' => Str::random(6) . '@testing.com']);
         $this->actingAs($user);
 
         $response = $this->get('/users');
